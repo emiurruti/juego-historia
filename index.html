@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Archivo 47 — Ecos de un mundo dividido</title>
+<style>
+:root{
+ --bg:#081019;--panel:#101b26;--panel2:#172633;--ink:#eef3f5;--muted:#aab7bf;
+ --gold:#d7b56d;--red:#c75d5d;--blue:#5f9fc8;--green:#5db88b;--line:#2b4353;
+ --paper:#d8cfb7;--paperink:#2c2b27
+}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#070e15;color:var(--ink);font-family:Inter,system-ui,Segoe UI,Arial,sans-serif}
+button{font:inherit}.wrap{max-width:1280px;margin:auto;padding:14px}.hidden{display:none!important}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.brand{font-weight:900;letter-spacing:.12em}.brand b{color:var(--gold)}
+.chip{border:1px solid var(--line);background:#0e1821;border-radius:999px;padding:7px 11px;color:var(--muted);font-size:.88rem}
+.btn{border:0;border-radius:11px;padding:11px 15px;font-weight:800;cursor:pointer;background:linear-gradient(135deg,#b48c4b,#e0c47e);color:#111820}
+.btn.secondary{background:#152532;color:var(--ink);border:1px solid #39566a}.btn.ghost{background:transparent;color:var(--muted);border:1px solid var(--line)}
+.btn:focus-visible,.interact:focus-visible,.choice:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.card{background:linear-gradient(145deg,#132330,#0b1721);border:1px solid var(--line);border-radius:20px;box-shadow:0 22px 70px #0007}
+.hero{min-height:690px;display:grid;grid-template-columns:1.05fr .95fr;gap:26px;padding:38px;align-items:center}
+.eyebrow{color:var(--gold);font-weight:850;letter-spacing:.08em}.hero h1{font-size:clamp(3.3rem,7vw,6.8rem);line-height:.86;margin:.15em 0}.hero h1 span{color:var(--gold)}
+.hero p{color:var(--muted);line-height:1.6;font-size:1.05rem;max-width:650px}.heroArt{min-height:520px;border-radius:18px;border:1px solid #324a59;background:radial-gradient(circle at 50% 45%,#213747,#0b151e 62%);position:relative;overflow:hidden;display:grid;place-items:center}
+.heroArt:before{content:"1947";font-size:12rem;font-weight:950;color:#ffffff07;position:absolute}.folder{font-size:8rem;filter:drop-shadow(0 20px 28px #0008);z-index:2}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}.kbd{border:1px solid #52697a;background:#101c26;border-radius:7px;padding:5px 8px;color:#d8e2e8}
+.hud{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:10px 12px;background:#0d1821;border:1px solid var(--line);border-radius:14px;margin-bottom:10px}
+.progress{height:9px;border-radius:99px;background:#071019;border:1px solid #2d4352;overflow:hidden}.progress>div{height:100%;background:linear-gradient(90deg,var(--gold),#d37a5b);transition:.3s}
+.stats{display:flex;gap:7px;flex-wrap:wrap}
+.gameLayout{display:grid;grid-template-columns:1fr 290px;gap:12px}.worldWrap{position:relative}.world{position:relative;width:100%;height:min(70vh,680px);min-height:520px;overflow:hidden;border-radius:18px;border:1px solid #334c5d;background:#17232d;outline:none}
+.room{position:absolute;inset:0;background:
+ linear-gradient(#ffffff06 1px,transparent 1px),linear-gradient(90deg,#ffffff06 1px,transparent 1px),
+ radial-gradient(circle at 20% 20%,#324354 0,#1a2934 35%,#101a22 100%);background-size:48px 48px,48px 48px,auto}
+.room:before{content:"";position:absolute;left:0;right:0;top:0;height:92px;background:linear-gradient(#0a1219,#18242d);border-bottom:6px solid #263c4a;box-shadow:0 14px 30px #0007}
+.roomTitle{position:absolute;top:18px;left:22px;font-weight:900;letter-spacing:.08em;color:#cbd5da}.roomSub{position:absolute;top:45px;left:22px;color:#7f929e;font-size:.86rem}
+.obj{position:absolute;display:grid;place-items:center;border:1px solid #415b6b;background:#152632;border-radius:10px;box-shadow:0 8px 20px #0005;color:#e5edf0;text-align:center;padding:6px;font-size:.78rem;user-select:none}
+.obj.ready{border-color:var(--gold);box-shadow:0 0 0 2px #d7b56d44,0 8px 22px #0006}.obj.done{border-color:var(--green);opacity:.78}
+.obj .ico{font-size:2rem;display:block}.player{position:absolute;width:34px;height:48px;z-index:20;transition:transform .03s linear;filter:drop-shadow(0 7px 5px #0007)}
+.head{position:absolute;left:9px;top:0;width:16px;height:16px;border-radius:50%;background:#c9b28f;border:2px solid #101820}.body{position:absolute;left:5px;top:15px;width:24px;height:24px;border-radius:8px 8px 5px 5px;background:#536d7c;border:2px solid #0a1117}.leg{position:absolute;top:37px;width:7px;height:11px;background:#273944}.leg.a{left:8px}.leg.b{right:8px}
+.prompt{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);z-index:30;background:#071019e8;border:1px solid var(--gold);border-radius:10px;padding:9px 13px;color:#f4e5bd;white-space:nowrap}
+.side{padding:16px;background:#0c1720;border:1px solid var(--line);border-radius:17px}.side h3{margin-top:0}.objective{padding:12px;border-left:3px solid var(--gold);background:#13232e;border-radius:8px;line-height:1.45}.evidenceList{display:grid;gap:7px;margin-top:10px}.ev{padding:9px;border:1px solid #314a5a;border-radius:9px;color:#8597a2}.ev.got{color:#dce7eb;border-color:#527260;background:#10241d}
+.modal{position:fixed;inset:0;background:#02070bcf;z-index:100;display:grid;place-items:center;padding:18px}.modalCard{width:min(900px,96vw);max-height:90vh;overflow:auto;background:linear-gradient(145deg,#172835,#0c1821);border:1px solid #3c586a;border-radius:20px;padding:24px;box-shadow:0 30px 100px #000}.modalCard h2{margin-top:.2em}.source{background:#d8cfb7;color:#2d2c27;border-radius:9px;padding:16px;margin:12px 0;font-family:Georgia,serif;line-height:1.45;box-shadow:inset 0 0 35px #7b6b4933}
+.choices{display:grid;gap:9px}.choice{width:100%;text-align:left;padding:13px;border-radius:11px;border:1px solid #3c596b;background:#152733;color:var(--ink);cursor:pointer}.choice:hover{border-color:var(--gold)}.choice.ok{border-color:var(--green);background:#123026}.choice.no{border-color:var(--red);background:#351d22}
+.feedback{padding:13px;margin-top:12px;border-radius:10px;background:#0a151d;border-left:4px solid var(--blue);line-height:1.45}.feedback.ok{border-color:var(--green)}.feedback.no{border-color:var(--red)}
+.clue{margin-top:10px;padding:11px;border-radius:10px;background:#1b2d39;color:#dce5e9}.timeline{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.event{padding:12px;border:1px solid #3b5869;background:#152632;color:var(--ink);border-radius:10px;cursor:pointer}.event.sel{border-color:var(--gold)}.slots{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:10px 0}.slot{min-height:76px;padding:8px;border:1px dashed #607684;border-radius:9px;color:var(--muted);font-size:.85rem}
+.matchgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.matchcol{display:grid;gap:8px}.matchitem{padding:11px;border:1px solid #3a5668;border-radius:9px;background:#142632;cursor:pointer}.matchitem.sel{border-color:var(--gold);background:#2a2a24}.matchitem.matched{border-color:var(--green);opacity:.6}
+.board{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.board .casefile{padding:12px;border:1px solid #3a5566;border-radius:10px;background:#132530;cursor:pointer}.casefile.active{border-color:var(--gold)}.finalPanel{padding:13px;border:1px solid #425c6c;border-radius:10px;background:#0e1b25}
+.complete{text-align:center;padding:48px}.big{font-size:4.5rem;font-weight:950;color:var(--gold)}.badges span{display:inline-block;padding:7px 10px;margin:4px;border-radius:999px;background:#173042;color:#dce8ed}
+.pause{position:fixed;inset:0;background:#03080ce8;z-index:110;display:grid;place-items:center}.pauseBox{text-align:center;background:#101d27;border:1px solid #3b5566;border-radius:18px;padding:32px;min-width:320px}
+@media(max-width:850px){.hero,.gameLayout{grid-template-columns:1fr}.heroArt{min-height:280px}.side{order:-1}.world{min-height:500px}.hud{grid-template-columns:1fr}.slots,.board{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body><div class="wrap">
+<header class="top"><div class="brand">◈ <b>ARCHIVO 47</b> · ECOS DE UN MUNDO DIVIDIDO</div><div style="display:flex;gap:7px"><button class="btn ghost" id="audioBtn" onclick="toggleAudio()">♪ Audio: OFF</button><span class="chip">Historia · Siglo XX</span></div></header>
+
+<section id="start" class="card hero">
+<div><div class="eyebrow">VIDEOJUEGO DE INVESTIGACIÓN HISTÓRICA</div><h1>Archivo <span>47</span></h1>
+<p>Un archivo documental sobre la segunda mitad del siglo XX quedó incompleto. Vas a recorrer cuatro salas, recuperar evidencias y reconstruir conexiones entre <b>Guerra Fría y descolonización</b>.</p>
+<div class="source" style="font-family:inherit"><b>Misión:</b> no memorices respuestas. Observá el espacio, recuperá documentos, compará evidencias, ordená procesos y defendé interpretaciones históricas.</div>
+<div class="controls"><span class="kbd">WASD / flechas · mover</span><span class="kbd">E / Enter · interactuar</span><span class="kbd">M · expediente</span><span class="kbd">ESC · pausa</span></div>
+<button class="btn" onclick="startGame()">Ingresar al archivo</button> <button class="btn secondary" onclick="showHelp()">Instrucciones</button>
+<p style="font-size:.82rem">El audio ambiental es original y generado en el navegador; podés apagarlo en cualquier momento.</p></div>
+<div class="heroArt"><div class="folder">🗃️</div></div></section>
+
+<section id="play" class="hidden">
+<div class="hud"><button class="btn secondary" onclick="showHelp()">? Ayuda</button><div><div style="display:flex;justify-content:space-between;font-size:.82rem;color:var(--muted);margin-bottom:5px"><span id="roomName"></span><span id="pct">0%</span></div><div class="progress"><div id="prog"></div></div></div><div class="stats"><span class="chip" id="score">◆ 0</span><span class="chip" id="stars">★ 0</span></div></div>
+<div class="gameLayout">
+<div class="worldWrap"><div id="world" class="world" tabindex="0"><div id="room" class="room"></div><div id="player" class="player"><div class="head"></div><div class="body"></div><div class="leg a"></div><div class="leg b"></div></div><div id="prompt" class="prompt hidden">E · interactuar</div></div></div>
+<aside class="side"><div class="eyebrow">EXPEDIENTE ACTUAL</div><h3 id="sideTitle"></h3><div class="objective" id="objective"></div><p class="muted" id="sideText"></p><h4>Evidencias recuperadas</h4><div id="evidenceList" class="evidenceList"></div><br><button class="btn secondary" onclick="openNotebook()">Abrir expediente (M)</button></aside>
+</div></section>
+
+<div id="modal" class="modal hidden"><div class="modalCard" id="modalContent"></div></div>
+<div id="pause" class="pause hidden"><div class="pauseBox"><div class="eyebrow">PAUSA</div><h2>Archivo en espera</h2><p class="muted">Tu progreso de esta partida se mantiene.</p><button class="btn" onclick="togglePause()">Continuar</button></div></div>
+
+<script>
+const rooms=[
+ {name:'Sala I · El mundo bipolar',title:'Dos centros de poder',objective:'Recuperá 3 evidencias y reconstruí cómo se organizó el escenario internacional de posguerra.',
+  note:'Nivel inicial: reconocer actores, zonas de influencia y el sentido de la bipolaridad.',
+  objs:[
+   {id:'map',x:12,y:23,w:130,h:92,icon:'▦',label:'Mapa de bloques',kind:'match'},
+   {id:'memo',x:72,y:24,w:120,h:88,icon:'▤',label:'Memorando 1947',kind:'source'},
+   {id:'radio',x:42,y:68,w:105,h:78,icon:'◉',label:'Radio de archivo',kind:'decision'}]},
+ {name:'Sala II · Crisis y equilibrio',title:'Tensión sin guerra mundial',objective:'Reconstruí la secuencia de crisis y explicá por qué el peligro nuclear alteró las decisiones.',
+  note:'Nivel intermedio: cronología, comparación y relaciones entre crisis.',
+  objs:[
+   {id:'timeline',x:11,y:25,w:135,h:85,icon:'⌛',label:'Mesa cronológica',kind:'timeline'},
+   {id:'berlin',x:68,y:24,w:120,h:88,icon:'▥',label:'Archivo Berlín',kind:'source2'},
+   {id:'cuba',x:40,y:69,w:120,h:76,icon:'◈',label:'Carpeta Cuba',kind:'crisis'}]},
+ {name:'Sala III · Fin de los imperios',title:'Descolonización',objective:'Compará trayectorias de independencia y distinguí soberanía política de persistencia de dependencias.',
+  note:'Nivel avanzado: interpretar procesos heterogéneos y evitar explicaciones únicas.',
+  objs:[
+   {id:'routes',x:10,y:23,w:140,h:90,icon:'⌁',label:'Rutas de independencia',kind:'routes'},
+   {id:'indonesia',x:70,y:24,w:125,h:90,icon:'◫',label:'Dossier Indonesia',kind:'indonesia'},
+   {id:'depend',x:40,y:69,w:125,h:78,icon:'⛓',label:'Red de dependencias',kind:'depend'}]},
+ {name:'Sala IV · Mesa de síntesis',title:'Cruce de procesos',objective:'Usá evidencias de las salas anteriores para reconstruir cómo Guerra Fría y descolonización se cruzaron.',
+  note:'Desafío final: combinar fuentes, cronología, procesos y una interpretación general.',
+  objs:[
+   {id:'board',x:12,y:24,w:135,h:95,icon:'◇',label:'Tablero de evidencias',kind:'board'},
+   {id:'final',x:67,y:25,w:130,h:95,icon:'▧',label:'Informe final',kind:'final'},
+   {id:'exit',x:41,y:70,w:115,h:74,icon:'⇥',label:'Cierre del archivo',kind:'exit'}]}
+];
+const state={room:0,score:0,stars:0,x:48,y:52,done:{},evidence:[],near:null,audio:false,paused:false};
+const total=12;
+const evidNames={
+ map:'Mapa bipolar',memo:'Equilibrio de fuerzas',radio:'Competencia global',timeline:'Cronología de crisis',berlin:'Berlín dividido',cuba:'Riesgo nuclear',
+ routes:'Vías de descolonización',indonesia:'Caso Indonesia',depend:'Independencia y dependencia',board:'Conexión poscolonial',final:'Síntesis histórica',exit:'Archivo cerrado'
+};
+let audioCtx=null,master=null,oscillators=[];
+
+function startGame(){document.getElementById('start').classList.add('hidden');document.getElementById('play').classList.remove('hidden');renderRoom();document.getElementById('world').focus()}
+function renderRoom(){
+ const R=rooms[state.room],room=document.getElementById('room');room.innerHTML=`<div class="roomTitle">${R.name}</div><div class="roomSub">${R.title}</div>`;
+ R.objs.forEach(o=>{let d=document.createElement('div');d.className='obj '+(state.done[o.id]?'done':'');d.id='obj_'+o.id;d.style.left=o.x+'%';d.style.top=o.y+'%';d.style.width=o.w+'px';d.style.height=o.h+'px';d.innerHTML=`<div><span class="ico">${o.icon}</span>${o.label}${state.done[o.id]?'<br>✓ revisado':''}</div>`;room.appendChild(d)});
+ document.getElementById('roomName').textContent=R.name;document.getElementById('sideTitle').textContent=R.title;document.getElementById('objective').textContent=R.objective;document.getElementById('sideText').textContent=R.note;
+ state.x=48;state.y=52;updatePlayer();updateHUD();renderEvidence();document.getElementById('world').focus()
+}
+function updatePlayer(){document.getElementById('player').style.left=state.x+'%';document.getElementById('player').style.top=state.y+'%';checkNear()}
+function checkNear(){
+ const R=rooms[state.room];let best=null,bd=999;
+ R.objs.forEach(o=>{let dx=state.x-o.x,dy=state.y-o.y,d=Math.hypot(dx,dy);if(d<bd){bd=d;best=o}});
+ state.near=bd<17?best:null;document.querySelectorAll('.obj').forEach(x=>x.classList.remove('ready'));
+ if(state.near){document.getElementById('obj_'+state.near.id)?.classList.add('ready');document.getElementById('prompt').classList.remove('hidden');document.getElementById('prompt').textContent=`E · ${state.done[state.near.id]?'revisar':'interactuar'}: ${state.near.label}`}else document.getElementById('prompt').classList.add('hidden')
+}
+const keys={};document.addEventListener('keydown',e=>{
+ if(e.key==='Escape'){togglePause();return}
+ if(state.paused)return;
+ if(e.key.toLowerCase()==='m'){openNotebook();return}
+ if((e.key.toLowerCase()==='e'||e.key==='Enter')&&!document.getElementById('modal').classList.contains('hidden')===false&&state.near){interact(state.near);return}
+ keys[e.key.toLowerCase()]=true;
+});document.addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
+setInterval(()=>{if(document.getElementById('play').classList.contains('hidden')||state.paused||!document.getElementById('modal').classList.contains('hidden'))return;let moved=false,s=.75;if(keys['w']||keys['arrowup']){state.y-=s;moved=true}if(keys['s']||keys['arrowdown']){state.y+=s;moved=true}if(keys['a']||keys['arrowleft']){state.x-=s;moved=true}if(keys['d']||keys['arrowright']){state.x+=s;moved=true}state.x=Math.max(3,Math.min(92,state.x));state.y=Math.max(17,Math.min(88,state.y));if(moved)updatePlayer()},20);
+
+function interact(o){
+ if(o.id==='exit'&&!state.done.final){openMsg('Salida bloqueada','Antes de cerrar el archivo tenés que completar el Informe final.');return}
+ if(o.id==='exit'){completeGame();return}
+ const fn={match:challengeMatch,source:challengeSource,decision:challengeDecision,timeline:challengeTimeline,source2:challengeBerlin,crisis:challengeCuba,routes:challengeRoutes,indonesia:challengeIndonesia,depend:challengeDepend,board:challengeBoard,final:challengeFinal}[o.kind];
+ fn&&fn(o)
+}
+function shell(title,body){document.getElementById('modalContent').innerHTML=`<div class="eyebrow">ARCHIVO INTERACTIVO</div><h2>${title}</h2>${body}<div id="feedback"></div>`;document.getElementById('modal').classList.remove('hidden')}
+function closeModal(){document.getElementById('modal').classList.add('hidden');document.getElementById('world').focus();renderRoom()}
+function clue(text){let el=document.getElementById('clue');el.textContent=text;el.classList.remove('hidden');state.score=Math.max(0,state.score-10);updateHUD()}
+function finish(id,points=100,msg='Evidencia validada.'){
+ if(!state.done[id]){state.done[id]=true;state.evidence.push(id);state.score+=points;state.stars++;tone('success')}
+ document.getElementById('feedback').innerHTML=`<div class="feedback ok"><b>✓ ${msg}</b></div><br><button class="btn" onclick="closeModal();checkRoom()">Guardar evidencia</button>`;updateHUD();renderEvidence()
+}
+function wrong(msg){tone('error');document.getElementById('feedback').innerHTML=`<div class="feedback no"><b>Hipótesis a revisar.</b><br>${msg}</div>`}
+function checkRoom(){let R=rooms[state.room];if(R.objs.filter(o=>o.id!=='exit').every(o=>state.done[o.id])){if(state.room<3)levelComplete();}}
+function levelComplete(){let n=state.room+1;shell('Sala reconstruida',`<div class="complete"><div class="big">★ ★ ★</div><p>Completaste ${rooms[state.room].name}. La próxima sala exige relacionar más evidencias y procesos.</p><button class="btn" onclick="nextRoom()">Desbloquear Sala ${n+1}</button></div>`)}
+function nextRoom(){state.room++;closeModal();renderRoom()}
+
+function challengeMatch(o){
+ shell('Mapa de bloques',`<p>La posguerra configuró dos grandes centros de poder. Vinculá cada superpotencia con la zona que el material describe como su principal ámbito de influencia.</p>
+ <div class="matchgrid"><div class="matchcol"><button class="matchitem" onclick="pickMatch('USA',this)">Estados Unidos</button><button class="matchitem" onclick="pickMatch('USSR',this)">URSS</button></div>
+ <div class="matchcol"><button class="matchitem" onclick="pickMatch('west',this)">Mundo capitalista occidental y hemisferio occidental</button><button class="matchitem" onclick="pickMatch('east',this)">Zona ocupada por el Ejército Rojo y Europa oriental</button></div></div>
+ <div id="matchStatus" class="clue">Seleccioná un elemento de cada columna.</div><button class="btn secondary" onclick="clue('Pensá en el reparto de áreas de influencia consolidado al final de la Segunda Guerra Mundial.')">Pista</button>`);
+ window.matchSel=[];
+}
+function pickMatch(v,b){
+ if(b.classList.contains('matched'))return; let side=(v==='USA'||v==='USSR')?'L':'R';
+ let existing=window.matchSel.find(x=>x.side===side);if(existing){existing.b.classList.remove('sel');window.matchSel=window.matchSel.filter(x=>x.side!==side)}
+ b.classList.add('sel');window.matchSel.push({v,b,side});
+ if(window.matchSel.length===2){let vals=window.matchSel.map(x=>x.v);let ok=(vals.includes('USA')&&vals.includes('west'))||(vals.includes('USSR')&&vals.includes('east'));
+ if(ok){window.matchSel.forEach(x=>{x.b.classList.remove('sel');x.b.classList.add('matched')});document.getElementById('matchStatus').textContent='Relación validada. Ahora reconstruí la segunda pareja.';window.matchSel=[];if(document.querySelectorAll('.matchitem.matched').length===4)finish('map',110,'Mapa bipolar reconstruido.')}else{window.matchSel.forEach(x=>x.b.classList.remove('sel'));window.matchSel=[];wrong('Esa asociación no coincide con las áreas de influencia descritas en el material. Revisá el reparto de fuerzas de posguerra.')}}}
+function challengeSource(){
+ shell('Memorando: equilibrio de fuerzas',`<div class="source">“Las dos superpotencias aceptaron, en términos generales, el reparto global de fuerzas establecido al final de la Segunda Guerra Mundial.”</div>
+ <p>¿Qué interpretación es más consistente con esta evidencia?</p><div class="choices">
+ ${choices(['La Guerra Fría implicó confrontación constante, pero no una guerra mundial directa permanente entre las dos superpotencias.','Estados Unidos y la URSS estuvieron en guerra militar directa durante todo el período.','Las áreas de influencia dejaron de importar después de 1945.','La rivalidad internacional desapareció tras 1945'],'memo',0,'La evidencia apunta a confrontación y equilibrio de poder, no a una guerra mundial directa permanente.')}
+ </div><button class="btn secondary" onclick="clue('Diferenciá “enfrentamiento constante” de “guerra militar directa permanente”.')">Pista</button>`)
+}
+function challengeDecision(){
+ shell('Radio de archivo: zonas de fricción',`<p>Un boletín informa que los antiguos imperios coloniales están llegando a su fin y que la orientación futura de muchos nuevos Estados todavía no está definida.</p>
+ <div class="source">El material señala que fuera de Europa, especialmente en espacios poscoloniales, las superpotencias compitieron por apoyo e influencia.</div>
+ <p>Marcá la decisión de investigación más sólida:</p><div class="choices">${choices(['Investigar esos nuevos Estados como espacios donde descolonización y Guerra Fría podían cruzarse.','Descartar Asia y África porque la Guerra Fría fue exclusivamente europea.','Suponer que todos los nuevos Estados quedaron automáticamente alineados con una misma superpotencia.','Ignorar la descolonización porque terminó antes de 1945.'],'radio',0,'La investigación debe conectar ambos procesos: el fin de los imperios abrió nuevos escenarios de competencia e influencia.')}</div>`)
+}
+const answerKey={};
+function choices(arr,id,a,explain){
+ answerKey[id]={correct:a,explain:explain};
+ return arr.map((x,i)=>`<button type="button" class="choice" data-answer-id="${id}" data-answer-index="${i}">${x}</button>`).join('')
+}
+document.addEventListener('click',function(ev){
+ const b=ev.target.closest('.choice[data-answer-id]');
+ if(!b)return;
+ const id=b.dataset.answerId, i=Number(b.dataset.answerIndex), cfg=answerKey[id];
+ if(!cfg)return;
+ const group=b.closest('.choices');
+ if(group && group.dataset.done==='1')return;
+ if(i===cfg.correct){
+   b.classList.add('ok');
+   if(group){group.dataset.done='1';group.querySelectorAll('.choice').forEach(x=>x.disabled=true)}
+   finish(id,100,cfg.explain);
+ }else{
+   b.classList.add('no');
+   wrong(cfg.explain);
+ }
+});
+
+function challengeTimeline(){
+ const ev=[['Crisis de Berlín / bloqueo','1948–1949'],['Guerra de Corea','1950–1953'],['Crisis de los misiles en Cuba','1962'],['Caída del Muro de Berlín','1989']];
+ shell('Mesa cronológica',`<p>Ordená los acontecimientos del más antiguo al más reciente. Seleccionalos en el orden correcto.</p>
+ <div class="timeline">${ev.map((e,i)=>`<button class="event" onclick="pickEvent(${i},this,'${e[0]}')"><b>${e[0]}</b><br><span class="muted">${e[1]}</span></button>`).join('')}</div><div id="slots" class="slots">${[1,2,3,4].map(i=>`<div class="slot">${i}. —</div>`).join('')}</div>
+ <button class="btn" onclick="checkTimeline()">Verificar</button> <button class="btn secondary" onclick="resetTimeline()">Reiniciar</button><button class="btn ghost" onclick="clue('La primera crisis es la de Berlín; el cierre simbólico del período europeo llega con la caída del Muro.')">Pista</button>`);
+ window.order=[];
+}
+function pickEvent(i,b,name){if(window.order.some(x=>x.i===i))return;window.order.push({i,b,name});b.classList.add('sel');drawSlots()}
+function drawSlots(){document.getElementById('slots').innerHTML=[0,1,2,3].map(k=>`<div class="slot">${k+1}. ${window.order[k]?.name||'—'}</div>`).join('')}
+function resetTimeline(){window.order.forEach(x=>x.b.classList.remove('sel'));window.order=[];drawSlots()}
+function checkTimeline(){if(window.order.length<4){wrong('Todavía faltan acontecimientos por ubicar.');return}if(window.order.every((x,i)=>x.i===i))finish('timeline',130,'Secuencia reconstruida correctamente. La cronología permite observar distintas fases de la Guerra Fría.');else wrong('La secuencia no es correcta. Revisá las fechas visibles y reconstruí el orden temporal.')}
+function challengeBerlin(){
+ shell('Archivo Berlín',`<div class="source">El material describe a Berlín Oeste como un enclave occidental dentro de la zona alemana controlada por la URSS y señala que la partición alemana siguió las líneas de ocupación del Este y del Oeste.</div>
+ <p>¿Qué convierte a Berlín en una evidencia útil para comprender la Guerra Fría?</p><div class="choices">${choices(['Materializa en un mismo espacio la división y la tensión entre las áreas de influencia.','Demuestra que Alemania permaneció políticamente unificada durante toda la Guerra Fría.','Prueba que no existieron áreas de influencia en Europa.','Indica que Berlín quedó completamente fuera de la rivalidad.'],'berlin',0,'Berlín condensó territorialmente la división entre Este y Oeste y se convirtió en un foco recurrente de tensión.')}</div>`)
+}
+function challengeCuba(){
+ shell('Carpeta 1962',`<p>Tenés tres fragmentos. Seleccioná la conclusión que los conecta sin exagerar la evidencia.</p>
+ <div class="source">A. Existían arsenales nucleares capaces de producir una destrucción enorme.<br>B. Las superpotencias evitaban una guerra mundial directa.<br>C. La Crisis de Cuba llevó la confrontación a un punto de altísimo riesgo.</div>
+ <div class="choices">${choices(['La disuasión y el riesgo de escalada condicionaron las decisiones de las superpotencias.','Las armas nucleares hicieron imposible cualquier crisis.','La Crisis de Cuba terminó inmediatamente con la Guerra Fría.','La rivalidad dejó de existir después de 1962.'],'cuba',0,'La clave es comprender la tensión entre confrontación, disuasión y riesgo de escalada nuclear.')}</div><button class="btn secondary" onclick="clue('Buscá una conclusión que pueda sostenerse con los tres fragmentos a la vez.')">Pista</button>`)
+}
+function challengeRoutes(){
+ shell('Rutas de descolonización',`<p>Clasificá la interpretación más adecuada.</p><div class="source">Los procesos de independencia no siguieron una única vía: hubo negociaciones, movilizaciones políticas y conflictos armados, con ritmos y condiciones diferentes.</div>
+ <div class="choices">${choices(['La descolonización fue un proceso heterogéneo y debe analizarse atendiendo a cada contexto.','Todas las colonias obtuvieron la independencia mediante el mismo procedimiento.','La descolonización ocurrió de manera simultánea y pacífica en todos los territorios.','Las condiciones locales no influyeron en las independencias.'],'routes',0,'No existe una única fórmula de descolonización: las trayectorias fueron diversas.')}</div>`)
+}
+function challengeIndonesia(){
+ shell('Dossier Indonesia',`<div class="source">El material señala que los Países Bajos abandonaron su intento de mantener el control de Indonesia, mientras Estados Unidos valoraba el caso en relación con la lucha contra el comunismo y el uso de fuerzas europeas en Europa.</div>
+ <p>¿Qué habilidad histórica exige este caso?</p><div class="choices">${choices(['Relacionar un proceso de descolonización con el contexto estratégico de la Guerra Fría.','Explicar Indonesia únicamente como un conflicto europeo sin dimensión colonial.','Suponer que toda independencia asiática fue dirigida por la URSS.','Separar completamente la política colonial de la competencia internacional.'],'indonesia',0,'El caso muestra que descolonización y estrategia de Guerra Fría podían influirse mutuamente.')}</div><button class="btn secondary" onclick="clue('No estudies la independencia y la rivalidad de superpotencias como procesos aislados.')">Pista</button>`)
+}
+function challengeDepend(){
+ shell('Red de dependencias',`<p>Un nuevo Estado alcanza soberanía política, pero conserva fuertes vínculos económicos y culturales con su antigua metrópoli. Elegí la lectura más rigurosa.</p>
+ <div class="choices">${choices(['La independencia política no implica automáticamente la desaparición de todas las relaciones de dependencia.','Si persisten vínculos económicos, entonces nunca existió independencia política.','Toda independencia elimina inmediatamente las estructuras heredadas del colonialismo.','La soberanía política y las relaciones económicas significan exactamente lo mismo.'],'depend',0,'Conviene distinguir la soberanía política de otras dependencias o vínculos que pueden persistir.')}</div>`)
+}
+function challengeBoard(){
+ shell('Tablero de evidencias',`<p>Para abrir el informe final necesitás seleccionar <b>tres evidencias de salas diferentes</b> que permitan demostrar que Guerra Fría y descolonización no fueron procesos completamente aislados.</p>
+ <div class="board" id="board">${state.evidence.filter(id=>!['board','final','exit'].includes(id)).map(id=>`<button class="casefile" data-id="${id}" onclick="toggleCase(this)">${evidNames[id]}</button>`).join('')}</div>
+ <p id="boardCount" class="clue">0/3 seleccionadas</p><button class="btn" onclick="checkBoard()">Construir conexión</button><button class="btn secondary" onclick="clue('Una buena selección combina: competencia global + descolonización + un caso concreto donde ambos procesos se crucen.')">Pista</button>`);
+ window.caseSel=[]
+}
+function toggleCase(b){let id=b.dataset.id;if(window.caseSel.includes(id)){window.caseSel=window.caseSel.filter(x=>x!==id);b.classList.remove('active')}else if(window.caseSel.length<3){window.caseSel.push(id);b.classList.add('active')}document.getElementById('boardCount').textContent=window.caseSel.length+'/3 seleccionadas'}
+function checkBoard(){let good=window.caseSel.includes('radio')&&window.caseSel.includes('routes')&&window.caseSel.includes('indonesia');if(good)finish('board',160,'Conexión sólida: competencia global, diversidad de la descolonización y un caso concreto quedan articulados.');else wrong('La selección todavía no construye la conexión más sólida. Buscá una evidencia de competencia global, una sobre descolonización y un caso donde ambos procesos se crucen.')}
+function challengeFinal(){
+ if(!state.done.board){openMsg('Informe bloqueado','Primero reconstruí el Tablero de evidencias.');return}
+ shell('Informe final · reconstrucción histórica',`<p>El archivo contiene esta afirmación:</p><div class="source"><b>“La Guerra Fría fue solamente un conflicto europeo y la descolonización fue un proceso completamente independiente de ella.”</b></div>
+ <p>No respondas por memoria. Construí el informe seleccionando una tesis y dos fundamentos.</p>
+ <div class="finalPanel"><b>1 · Tesis</b><div class="choices" id="thesis">
+ <button class="choice" onclick="pickFinal('t',0,this)">La afirmación es insuficiente: la rivalidad fue global y se proyectó sobre espacios poscoloniales.</button>
+ <button class="choice" onclick="pickFinal('t',1,this)">La afirmación es correcta: fuera de Europa no existió competencia entre superpotencias.</button></div></div><br>
+ <div class="finalPanel"><b>2 · Fundamento sobre Guerra Fría</b><div class="choices" id="f1">
+ <button class="choice" onclick="pickFinal('a',0,this)">Las superpotencias compitieron por apoyo e influencia fuera de Europa.</button>
+ <button class="choice" onclick="pickFinal('a',1,this)">La Guerra Fría terminó antes de que aparecieran nuevos Estados.</button></div></div><br>
+ <div class="finalPanel"><b>3 · Fundamento sobre descolonización</b><div class="choices" id="f2">
+ <button class="choice" onclick="pickFinal('b',0,this)">Los nuevos Estados y las independencias crearon escenarios cuya orientación política podía convertirse en objeto de competencia.</button>
+ <button class="choice" onclick="pickFinal('b',1,this)">Todos los nuevos Estados siguieron exactamente el mismo camino y la misma alineación.</button></div></div><br>
+ <button class="btn" onclick="checkFinal()">Entregar informe</button> <button class="btn secondary" onclick="clue('Tu informe debe sostener tres cosas compatibles: alcance global, nuevos espacios poscoloniales y competencia por influencia.')">Pista</button>`);
+ window.finalSel={}
+}
+function pickFinal(k,v,b){b.parentElement.querySelectorAll('.choice').forEach(x=>x.classList.remove('ok'));b.classList.add('ok');window.finalSel[k]=v}
+function checkFinal(){if(Object.keys(window.finalSel).length<3){wrong('El informe está incompleto. Seleccioná una opción en cada apartado.');return}if(window.finalSel.t===0&&window.finalSel.a===0&&window.finalSel.b===0)finish('final',250,'Informe aceptado: integraste una tesis con evidencias coherentes sobre ambos procesos.');else wrong('Alguno de los fundamentos contradice las evidencias recuperadas. Revisá el tablero y corregí la argumentación.')}
+function completeGame(){
+ if(!state.done.exit){state.done.exit=true;state.score+=100;state.stars++;tone('success')}
+ shell('Archivo 47 reconstruido',`<div class="complete"><div class="eyebrow">MISIÓN COMPLETADA</div><div class="big">${state.score} pts</div><h2>Historiador/a de conexiones</h2><p class="muted">Completaste las cuatro salas y reconstruiste relaciones entre Guerra Fría y descolonización mediante cronología, análisis de fuentes, comparación de procesos y argumentación.</p><div class="badges"><span>Mundo bipolar</span><span>Cronología</span><span>Descolonización</span><span>Análisis de evidencias</span><span>Síntesis histórica</span></div><br><button class="btn" onclick="location.reload()">Jugar nuevamente</button></div>`)
+}
+function openNotebook(){shell('Expediente recuperado',`<p>Estas son las evidencias que ya validaste. Podés consultarlas para resolver desafíos posteriores.</p><div class="evidenceList">${state.evidence.length?state.evidence.map(id=>`<div class="ev got">✓ ${evidNames[id]}</div>`).join(''):'<div class="ev">Todavía no recuperaste evidencias.</div>'}</div><br><button class="btn" onclick="closeModal()">Volver a la sala</button>`)}
+function renderEvidence(){document.getElementById('evidenceList').innerHTML=rooms[state.room].objs.filter(o=>o.id!=='exit').map(o=>`<div class="ev ${state.done[o.id]?'got':''}">${state.done[o.id]?'✓':'○'} ${evidNames[o.id]}</div>`).join('')}
+function updateHUD(){let d=Object.keys(state.done).length;let p=Math.round(d/total*100);document.getElementById('prog').style.width=p+'%';document.getElementById('pct').textContent=p+'%';document.getElementById('score').textContent='◆ '+state.score;document.getElementById('stars').textContent='★ '+state.stars}
+function openMsg(t,m){shell(t,`<p>${m}</p><button class="btn" onclick="closeModal()">Volver</button>`)}
+function showHelp(){shell('Controles e instrucciones',`<div class="controls"><span class="kbd">WASD / flechas · mover</span><span class="kbd">E / Enter · interactuar</span><span class="kbd">M · expediente</span><span class="kbd">ESC · pausa</span></div><p>Acercate a los objetos resaltados y presioná <b>E</b>. Recuperá todas las evidencias de una sala para desbloquear la siguiente. Las pistas descuentan 10 puntos, pero nunca te bloquean. Un error explica qué relación revisar y podés volver a intentar.</p><button class="btn" onclick="closeModal()">Entendido</button>`)}
+function togglePause(){if(document.getElementById('play').classList.contains('hidden'))return;state.paused=!state.paused;document.getElementById('pause').classList.toggle('hidden',!state.paused)}
+function toggleAudio(){
+ if(!state.audio){startAudio();state.audio=true;document.getElementById('audioBtn').textContent='♪ Audio: ON'}else{state.audio=false;if(master)master.gain.setTargetAtTime(0,audioCtx.currentTime,.08);document.getElementById('audioBtn').textContent='♪ Audio: OFF'}
+}
+function startAudio(){
+ if(!audioCtx){audioCtx=new (window.AudioContext||window.webkitAudioContext)();master=audioCtx.createGain();master.gain.value=.045;master.connect(audioCtx.destination);
+ // Original, restrained ambient motif: low sustained tones, no sampled/copyrighted music.
+ const notes=[110,146.83,164.81,130.81];notes.forEach((f,i)=>{let o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=i%2?'triangle':'sine';o.frequency.value=f;g.gain.value=.13/(i+1);o.connect(g);g.connect(master);o.start();oscillators.push(o)});
+ let lfo=audioCtx.createOscillator(),lg=audioCtx.createGain();lfo.frequency.value=.08;lg.gain.value=.012;lfo.connect(lg);lg.connect(master.gain);lfo.start()
+ }else{master.gain.setTargetAtTime(.045,audioCtx.currentTime,.1)}
+}
+function tone(type){if(!state.audio||!audioCtx)return;let o=audioCtx.createOscillator(),g=audioCtx.createGain();o.frequency.value=type==='success'?440:180;o.type='sine';g.gain.value=.04;o.connect(g);g.connect(audioCtx.destination);o.start();g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+.35);o.stop(audioCtx.currentTime+.36)}
+</script></body></html>
